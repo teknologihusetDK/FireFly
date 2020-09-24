@@ -1,8 +1,18 @@
+enum DCDirectionValuesDansk {
+    //% block=fremad
+    forward = 0,
+    //% block=baglæns
+    backward = 1
+}
+
 /**
- * PCA9685
+ * Blocks for driving servo and DC motors, using the Firefly connection Board
  */
-//% weight=100 color=#0fbc11 icon=""
-namespace PCA9685 {
+
+//% groups='["DC Motor","Servo Motor", "Afstands Sensor (HC-SR04)"]'
+//% weight=111 color=#1565B2 icon="\uf085" block="Firefly"
+
+namespace Firefly {
     let _DEBUG: boolean = false
     const debug = (msg: string) => {
         if (_DEBUG === true) {
@@ -313,6 +323,7 @@ namespace PCA9685 {
      * @param offStep The range offset (0-4095) to turn the signal off
      */
     //% block advanced=true
+    //% blockHidden=true
     export function setPinPulseRange(pinNumber: PinNum = 0, onStep: number = 0, offStep: number = 2048, chipAddress: number = 0x40): void {
         pinNumber = Math.max(0, Math.min(15, pinNumber))
         const buffer = pins.createBuffer(2)
@@ -343,6 +354,7 @@ namespace PCA9685 {
      * @param dutyCycle The duty cycle (0-100) to set the LED to
      */
     //% block
+    //% blockHidden=true
     export function setLedDutyCycle(ledNum: LEDNum = 1, dutyCycle: number, chipAddress: number = 0x40): void {
         ledNum = Math.max(1, Math.min(16, ledNum))
         dutyCycle = Math.max(0, Math.min(100, dutyCycle))
@@ -368,6 +380,7 @@ namespace PCA9685 {
      * @param degrees The degrees (0-180) to move the servo to
      */
     //% block
+    //% blockHidden=true
     export function setServoPosition(servoNum: ServoNum = 1, degrees: number, chipAddress: number = 0x40): void {
         const chip = getChipConfig(chipAddress)
         servoNum = Math.max(1, Math.min(16, servoNum))
@@ -391,6 +404,7 @@ namespace PCA9685 {
      * @param speed [-100-100] The speed (-100-100) to turn the servo at
      */
     //% block
+    //% blockHidden=true
     export function setCRServoPosition(servoNum: ServoNum = 1, speed: number, chipAddress: number = 0x40): void {
         debug(`setCRServoPosition(${servoNum}, ${speed}, ${chipAddress})`)
         const chip = getChipConfig(chipAddress)
@@ -428,6 +442,7 @@ namespace PCA9685 {
      * @param midTimeCs The mid (90 degree for regular or off position if continuous rotation) for the servo; eg: 15
      */
     //% block advanced=true
+    //% blockHidden=true
     export function setServoLimits(servoNum: ServoNum = 1, minTimeCs: number = 5, maxTimeCs: number = 2.5, midTimeCs: number = -1, chipAddress: number = 0x40): void {
         const chip = getChipConfig(chipAddress)
         servoNum = Math.max(1, Math.min(16, servoNum))
@@ -446,6 +461,7 @@ namespace PCA9685 {
      * @param freq [40-1000] Frequency (40-1000) in hertz to run the clock cycle at; eg: 50
      */
     //% block advanced=true
+    //% blockHidden=true
     export function init(chipAddress: number = 0x40, newFreq: number = 50) {
         debug(`Init chip at address ${chipAddress} to ${newFreq}Hz`)
         const buf = pins.createBuffer(2)
@@ -504,6 +520,7 @@ namespace PCA9685 {
      * @param chipAddress [64-125] The I2C address of your PCA9685; eg: 64
      */
     //% block
+    //% blockHidden=true
     export function reset(chipAddress: number = 0x40): void {
         return init(chipAddress, getChipConfig(chipAddress).freq);
         //return init(chipAddress, getChipConfig(chipAddress).freq, true);
@@ -514,6 +531,7 @@ namespace PCA9685 {
      * @param hexAddress The hex address to convert to decimal; eg: 0x40
      */
     //% block
+    //% blockHidden=true
     export function chipAddress(hexAddress: string): number {
         hexAddress = stripHexPrefix(hexAddress)
         let dec = 0
@@ -533,28 +551,26 @@ namespace PCA9685 {
     export function setDebug(debugEnabled: boolean): void {
         _DEBUG = debugEnabled
     }
-}
 
 
 
 
-enum DCDirectionValuesDansk {
-        //% block=fremad
-        forward = 0,
-        //% block=baglæns
-        backward = 1
-    }
+
+
 
 /**
  * Blocks for driving servo and DC motors, using the Firefly connection Board
  */
+
+
+/* recomment again
 //% groups='["DC Motor","Servo Motor", "Afstands Sensor (HC-SR04)"]'
 //% weight=111 color=#1565B2 icon="\uf085" block="Firefly"
-namespace Firefly {
+*/
     //Initialize with using servo
     let usingServo = true;
     //PCA9685.reset(105)
-    PCA9685.init(105, 50)
+    init(105, 50)
     //PCA9685.reset(105)
     //PCA9685.reset(64) //64
     //PCA9685.init(64, 1000) //64
@@ -566,7 +582,7 @@ namespace Firefly {
             console.log("adjust to servo")
             usingServo = true
             //PCA9685.reset(105)
-            PCA9685.init(105, 50)
+            init(105, 50)
             //PCA9685.reset(64)
             //PCA9685.init(64, 1000)
         }
@@ -574,7 +590,7 @@ namespace Firefly {
             console.log("adjust to dc")
             usingServo = false
             //PCA9685.reset(105)
-            PCA9685.init(105, 1000)
+            init(105, 1000)
         }
         else {
             console.log("no adjustment needed")
@@ -601,16 +617,16 @@ namespace Firefly {
 
         switch(servoAtPin) {
             case 1:
-                PCA9685.setServoPosition(PCA9685.ServoNum.Servo13, angle, 105)
+                setServoPosition(ServoNum.Servo13, angle, 105)
                 break;
             case 2:
-                PCA9685.setServoPosition(PCA9685.ServoNum.Servo14, angle, 105)
+                setServoPosition(ServoNum.Servo14, angle, 105)
                 break;
             case 3:
-                PCA9685.setServoPosition(PCA9685.ServoNum.Servo15, angle, 105)
+                setServoPosition(ServoNum.Servo15, angle, 105)
                 break;
             case 4:
-                PCA9685.setServoPosition(PCA9685.ServoNum.Servo16, angle, 105)
+                setServoPosition(ServoNum.Servo16, angle, 105)
                 break;
         }
     }
@@ -652,29 +668,30 @@ namespace Firefly {
         
         switch(dcAtPin) {
             case 1:
-                PCA9685.setLedDutyCycle(PCA9685.LEDNum.LED8, speed, 105)
-                PCA9685.setLedDutyCycle(PCA9685.LEDNum.LED11, inputA, 105)
-                PCA9685.setLedDutyCycle(PCA9685.LEDNum.LED12, inputB, 105)
+                setLedDutyCycle(LEDNum.LED8, speed, 105)
+                setLedDutyCycle(LEDNum.LED11, inputA, 105)
+                setLedDutyCycle(LEDNum.LED12, inputB, 105)
                 break;
             case 2:
-                PCA9685.setLedDutyCycle(PCA9685.LEDNum.LED7, speed, 105)
-                PCA9685.setLedDutyCycle(PCA9685.LEDNum.LED9, inputA, 105)
-                PCA9685.setLedDutyCycle(PCA9685.LEDNum.LED10, inputB, 105)
+                setLedDutyCycle(LEDNum.LED7, speed, 105)
+                setLedDutyCycle(LEDNum.LED9, inputA, 105)
+                setLedDutyCycle(LEDNum.LED10, inputB, 105)
                 break;
             case 3:
-                PCA9685.setLedDutyCycle(PCA9685.LEDNum.LED2, speed, 105)
-                PCA9685.setLedDutyCycle(PCA9685.LEDNum.LED5, inputA, 105)
-                PCA9685.setLedDutyCycle(PCA9685.LEDNum.LED6, inputB, 105)
+                setLedDutyCycle(LEDNum.LED2, speed, 105)
+                setLedDutyCycle(LEDNum.LED5, inputA, 105)
+                setLedDutyCycle(LEDNum.LED6, inputB, 105)
                 break;
             case 4:
-                PCA9685.setLedDutyCycle(PCA9685.LEDNum.LED1, speed, 105)
-                PCA9685.setLedDutyCycle(PCA9685.LEDNum.LED3, inputA, 105)
-                PCA9685.setLedDutyCycle(PCA9685.LEDNum.LED4, inputB, 105)
+                setLedDutyCycle(LEDNum.LED1, speed, 105)
+                setLedDutyCycle(LEDNum.LED3, inputA, 105)
+                setLedDutyCycle(LEDNum.LED4, inputB, 105)
                 break;   
         }
     }
 
-    //% blockId=getDistance 
+    //% blockId=getDistance
+    // block advanced=true 
     //% block="Afstand i CM: Trig %triggerPin|Echo %echoPin"
     //% group="Afstands Sensor (HC-SR04)"
     export function getSampledDistance(triggerPin: DigitalPin, echoPin: DigitalPin): number {
