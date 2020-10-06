@@ -579,7 +579,7 @@ namespace Firefly {
     //Switches to desired motor type
     function adjustMotorType(wantedMotorType: string): void {
         if(wantedMotorType == "servo" && !usingServo) {
-            console.log("adjust to servo")
+            //console.log("adjust to servo")
             usingServo = true
             //PCA9685.reset(105)
             init(105, 50)
@@ -587,13 +587,13 @@ namespace Firefly {
             //PCA9685.init(64, 1000)
         }
         else if(wantedMotorType == "dc" && usingServo) {
-            console.log("adjust to dc")
+            //console.log("adjust to dc")
             usingServo = false
             //PCA9685.reset(105)
             init(105, 1000)
         }
         else {
-            console.log("no adjustment needed")
+            //console.log("no adjustment needed")
         }
     }
 
